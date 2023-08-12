@@ -777,7 +777,7 @@ ScriptToken* ExpressionEvaluator::Evaluate()
 			case kRetnType_String:
 			{
 				StringVar* strVar = g_StringMap.Get(cmdResult);
-				curToken = ScriptToken::Create(strVar ? strVar->GetCString() : "");
+				curToken = MakeScriptToken(strVar ? strVar->GetCString() : "");
 				break;
 			}
 			case kRetnType_Array:
@@ -785,7 +785,7 @@ ScriptToken* ExpressionEvaluator::Evaluate()
 				// ###TODO: cmds can return arrayID '0', not necessarily an error, does this support that?
 				if (g_ArrayMap.Exists(cmdResult) || !cmdResult)
 				{
-					curToken = ScriptToken::CreateArray(cmdResult);
+					curToken = MakeScriptTokenArray(cmdResult);
 					break;
 				}
 				else
@@ -796,11 +796,11 @@ ScriptToken* ExpressionEvaluator::Evaluate()
 			}
 			case kRetnType_Form:
 			{
-				curToken = ScriptToken::CreateForm(*((UInt64*)&cmdResult));
+				curToken = MakeScriptTokenForm(*((UInt64*)&cmdResult));
 				break;
 			}
 			case kRetnType_Default:
-				curToken = ScriptToken::Create(cmdResult);
+				curToken = MakeScriptToken(cmdResult);
 				break;
 			default:
 				Error("Unknown command return type %d while executing command in ExpressionEvaluator::Evaluate()", curToken, retnType);

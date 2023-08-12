@@ -23,7 +23,7 @@ ScriptToken::~ScriptToken()
 *************************************/
 
 // ScriptToken
-ScriptToken::ScriptToken() : type(kTokenType_Invalid), refIdx(0), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken() : type(kTokenType_Invalid), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	value.num = 0;
@@ -33,13 +33,13 @@ ScriptToken::ScriptToken(Token_Type _type, UInt8 _varType, UInt16 _refIdx) : typ
 {
 	INC_TOKEN_COUNT
 }
-ScriptToken::ScriptToken(bool boolean) : type(kTokenType_Boolean), refIdx(0), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(bool boolean) : type(kTokenType_Boolean), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	value.num = boolean ? 1 : 0;
 }
 
-ScriptToken::ScriptToken(double num) : type(kTokenType_Number), refIdx(0), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(double num) : type(kTokenType_Number), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	value.num = num;
@@ -51,16 +51,10 @@ ScriptToken::ScriptToken(Script::RefVariable* refVar, UInt16 refIdx) : type(kTok
 	value.refVar = refVar;
 }
 
-ScriptToken::ScriptToken(const std::string& str) : type(kTokenType_String), refIdx(0), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(std::string str) : type(kTokenType_String), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
-	value.str = str;
-}
-
-ScriptToken::ScriptToken(const char* str) : type(kTokenType_String), refIdx(0), variableType(Script::eVarType_Invalid)
-{
-	INC_TOKEN_COUNT
-	value.str = str;
+	value.str = std::move(str);
 }
 
 ScriptToken::ScriptToken(TESGlobal* global, UInt16 refIdx) : type(kTokenType_Global), refIdx(refIdx), variableType(Script::eVarType_Invalid)
@@ -69,7 +63,7 @@ ScriptToken::ScriptToken(TESGlobal* global, UInt16 refIdx) : type(kTokenType_Glo
 	value.global = global;
 }
 
-ScriptToken::ScriptToken(UInt32 id, Token_Type asType) : refIdx(0), type(asType), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(UInt32 id, Token_Type asType) : type(asType), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	switch (asType)
@@ -88,7 +82,7 @@ ScriptToken::ScriptToken(UInt32 id, Token_Type asType) : refIdx(0), type(asType)
 	}
 }
 
-ScriptToken::ScriptToken(Operator* op) : type(kTokenType_Operator), refIdx(0), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(Operator* op) : type(kTokenType_Operator), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	value.op = op;
@@ -126,7 +120,7 @@ ScriptToken::ScriptToken(CommandInfo* cmdInfo, UInt16 refIdx) : type(kTokenType_
 
 #if OBLIVION
 // ###TODO: Read() sets variable type; better to pass it to this constructor
-ScriptToken::ScriptToken(ScriptEventList::Var* var) : refIdx(0), type(kTokenType_Variable), variableType(Script::eVarType_Invalid)
+ScriptToken::ScriptToken(ScriptEventList::Var* var) : type(kTokenType_Variable), variableType(Script::eVarType_Invalid)
 {
 	INC_TOKEN_COUNT
 	value.var = var;
@@ -784,15 +778,15 @@ bool ScriptToken::Write(ScriptLineBuffer* buf)
 ScriptToken* ScriptToken::ToBasicToken() const
 {
 	if (CanConvertTo(kTokenType_String))
-		return Create(GetString());
+		return MakeScriptToken(GetString());
 	else if (CanConvertTo(kTokenType_Array))
-		return CreateArray(GetArray());
+		return MakeScriptTokenArray(GetArray());
 	else if (CanConvertTo(kTokenType_Form))
-		return CreateForm(GetFormID());
+		return MakeScriptTokenForm(GetFormID());
 	else if (CanConvertTo(kTokenType_Number))
-		return Create(GetNumber());
+		return MakeScriptToken(GetNumber());
 	else
-		return NULL ;
+		return nullptr;
 }
 
 double ScriptToken::GetNumericRepresentation(bool bFromHex)
@@ -1050,23 +1044,6 @@ static Operand s_operands[] =
 };
 
 STATIC_ASSERT(SIZEOF_ARRAY(s_operands, Operand) == kTokenType_Max);
-
-bool CanConvertOperand(Token_Type from, Token_Type to)
-{
-	if (from == to)
-		return true;
-	else if (from >= kTokenType_Invalid || to >= kTokenType_Invalid)
-		return false;
-
-	Operand* op = &s_operands[from];
-	for (UInt32 i = 0; i < op->numRules; i++)
-	{
-		if (op->rules[i] == to)
-			return true;
-	}
-
-	return false;
-}
 
 // Operator
 Token_Type Operator::GetResult(Token_Type lhs, Token_Type rhs)

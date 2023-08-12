@@ -132,16 +132,16 @@ ScriptToken* Eval_Comp_Number_Number(OperatorType op, ScriptToken* lh, ScriptTok
 	switch (op)
 	{
 	case kOpType_GreaterThan:
-		return ScriptToken::Create(lh->GetNumber() > rh->GetNumber());
+		return MakeScriptToken(lh->GetNumber() > rh->GetNumber());
 	case kOpType_LessThan:
-		return ScriptToken::Create(lh->GetNumber() < rh->GetNumber());
+		return MakeScriptToken(lh->GetNumber() < rh->GetNumber());
 	case kOpType_GreaterOrEqual:
-		return ScriptToken::Create(lh->GetNumber() >= rh->GetNumber());
+		return MakeScriptToken(lh->GetNumber() >= rh->GetNumber());
 	case kOpType_LessOrEqual:
-		return ScriptToken::Create(lh->GetNumber() <= rh->GetNumber());
+		return MakeScriptToken(lh->GetNumber() <= rh->GetNumber());
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -152,16 +152,16 @@ ScriptToken* Eval_Comp_String_String(OperatorType op, ScriptToken* lh, ScriptTok
 	switch (op)
 	{
 	case kOpType_GreaterThan:
-		return ScriptToken::Create(_stricmp(lhs, rhs) > 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) > 0);
 	case kOpType_LessThan:
-		return ScriptToken::Create(_stricmp(lhs, rhs) < 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) < 0);
 	case kOpType_GreaterOrEqual:
-		return ScriptToken::Create(_stricmp(lhs, rhs) >= 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) >= 0);
 	case kOpType_LessOrEqual:
-		return ScriptToken::Create(_stricmp(lhs, rhs) <= 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) <= 0);
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -170,12 +170,12 @@ ScriptToken* Eval_Eq_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, E
 	switch (op)
 	{
 	case kOpType_Equals:
-		return ScriptToken::Create(FloatEqual(lh->GetNumber(), rh->GetNumber()));
+		return MakeScriptToken(FloatEqual(lh->GetNumber(), rh->GetNumber()));
 	case kOpType_NotEqual:
-		return ScriptToken::Create(!(FloatEqual(lh->GetNumber(), rh->GetNumber())));
+		return MakeScriptToken(!(FloatEqual(lh->GetNumber(), rh->GetNumber())));
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -184,12 +184,12 @@ ScriptToken* Eval_Eq_Array(OperatorType op, ScriptToken* lh, ScriptToken* rh, Ex
 	switch (op)
 	{
 	case kOpType_Equals:
-		return ScriptToken::Create(lh->GetArray() == rh->GetArray());
+		return MakeScriptToken(lh->GetArray() == rh->GetArray());
 	case kOpType_NotEqual:
-		return ScriptToken::Create(lh->GetArray() != rh->GetArray());
+		return MakeScriptToken(lh->GetArray() != rh->GetArray());
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -200,12 +200,12 @@ ScriptToken* Eval_Eq_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, E
 	switch (op)
 	{
 	case kOpType_Equals:
-		return ScriptToken::Create(_stricmp(lhs, rhs) == 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) == 0);
 	case kOpType_NotEqual:
-		return ScriptToken::Create(_stricmp(lhs, rhs) != 0);
+		return MakeScriptToken(_stricmp(lhs, rhs) != 0);
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -214,7 +214,7 @@ ScriptToken* Eval_Eq_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, Exp
 	bool result = false;
 	TESForm* lhForm = lh->GetTESForm();
 	TESForm* rhForm = rh->GetTESForm();
-	if (lhForm == NULL && rhForm == NULL)
+	if (lhForm == nullptr && rhForm == nullptr)
 		result = true;
 	else if (lhForm && rhForm && lhForm->refID == rhForm->refID)
 		result = true;
@@ -222,12 +222,12 @@ ScriptToken* Eval_Eq_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, Exp
 	switch (op)
 	{
 	case kOpType_Equals:
-		return ScriptToken::Create(result);
+		return MakeScriptToken(result);
 	case kOpType_NotEqual:
-		return ScriptToken::Create(!result);
+		return MakeScriptToken(!result);
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -244,12 +244,12 @@ ScriptToken* Eval_Eq_Form_Number(OperatorType op, ScriptToken* lh, ScriptToken* 
 	switch (op)
 	{
 	case kOpType_Equals:
-		return ScriptToken::Create(result);
+		return MakeScriptToken(result);
 	case kOpType_NotEqual:
-		return ScriptToken::Create(!result);
+		return MakeScriptToken(!result);
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -258,75 +258,75 @@ ScriptToken* Eval_Logical(OperatorType op, ScriptToken* lh, ScriptToken* rh, Exp
 	switch (op)
 	{
 	case kOpType_LogicalAnd:
-		return ScriptToken::Create(lh->GetBool() && rh->GetBool());
+		return MakeScriptToken(lh->GetBool() && rh->GetBool());
 	case kOpType_LogicalOr:
-		return ScriptToken::Create(lh->GetBool()|| rh->GetBool());
+		return MakeScriptToken(lh->GetBool()|| rh->GetBool());
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
 ScriptToken* Eval_Add_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(lh->GetNumber() + rh->GetNumber());
+	return MakeScriptToken(lh->GetNumber() + rh->GetNumber());
 }
 
 ScriptToken* Eval_Add_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(std::string(lh->GetString()) + std::string(rh->GetString()));
+	return MakeScriptToken(std::string(lh->GetString()) + std::string(rh->GetString()));
 }
 
 ScriptToken* Eval_Arithmetic(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	double l = lh->GetNumber();
-	double r = rh->GetNumber();
+	const double l = lh->GetNumber();
+	const double r = rh->GetNumber();
 	switch (op)
 	{
 	case kOpType_Subtract:
-		return ScriptToken::Create(l - r);
+		return MakeScriptToken(l - r);
 	case kOpType_Multiply:
-		return ScriptToken::Create(l * r);
+		return MakeScriptToken(l * r);
 	case kOpType_Divide:
 		if (r != 0)
-			return ScriptToken::Create(l / r);
+			return MakeScriptToken(l / r);
 		else {
 			context->Error("Division by zero");
-			return NULL;
+			return nullptr;
 		}
 	case kOpType_Exponent:
-		return ScriptToken::Create(pow(l, r));
+		return MakeScriptToken(pow(l, r));
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
 ScriptToken* Eval_Integer(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	SInt64 l = lh->GetNumber();
-	SInt64 r = rh->GetNumber();
+	const SInt64 l = lh->GetNumber();
+	const SInt64 r = rh->GetNumber();
 
 	switch (op)
 	{
 	case kOpType_Modulo:
 		if (r != 0)
-			return ScriptToken::Create(double(l % r));
+			return MakeScriptToken(double(l % r));
 		else {
 			context->Error("Division by zero");
 			return NULL;
 		}
 	case kOpType_BitwiseOr:
-		return ScriptToken::Create(double(l | r));
+		return MakeScriptToken(double(l | r));
 	case kOpType_BitwiseAnd:
-		return ScriptToken::Create(double(l & r));
+		return MakeScriptToken(double(l & r));
 	case kOpType_LeftShift:
-		return ScriptToken::Create(double(l << r));
+		return MakeScriptToken(double(l << r));
 	case kOpType_RightShift:
-		return ScriptToken::Create(double(l >> r));
+		return MakeScriptToken(double(l >> r));
 	default:
 		context->Error("Unhandled operator %s", OpTypeToSymbol(op));
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -337,7 +337,7 @@ ScriptToken* Eval_Assign_Numeric(OperatorType op, ScriptToken* lh, ScriptToken* 
 		result = floor(result);
 
 	lh->GetVar()->data = result;
-	return ScriptToken::Create(result);
+	return MakeScriptToken(result);
 }
 
 ScriptToken* Eval_Assign_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -352,39 +352,39 @@ ScriptToken* Eval_Assign_String(OperatorType op, ScriptToken* lh, ScriptToken* r
 	else
 		strVar->Set(rh->GetString());
 
-	return ScriptToken::Create(rh->GetString());
+	return MakeScriptToken(rh->GetString());
 }
 
 ScriptToken* Eval_Assign_AssignableString(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	AssignableStringToken* aStr = dynamic_cast<AssignableStringToken*> (lh);
-	return aStr->Assign(rh->GetString()) ? ScriptToken::Create(aStr->GetString()) : NULL;
+	return aStr->Assign(rh->GetString()) ? MakeScriptToken(aStr->GetString()) : nullptr;
 }
 
 ScriptToken* Eval_Assign_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	UInt64* outRefID = (UInt64*)&(lh->GetVar()->data);
 	*outRefID = rh->GetFormID();
-	return ScriptToken::CreateForm(rh->GetFormID());
+	return MakeScriptTokenForm(rh->GetFormID());
 }
 
 ScriptToken* Eval_Assign_Form_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	// only direct numeric assignment we accept is zero
 	lh->GetVar()->data = 0;
-	return ScriptToken::CreateForm(0);
+	return MakeScriptTokenForm(0);
 }
 
 ScriptToken* Eval_Assign_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetGlobal()->data = rh->GetNumber();
-	return ScriptToken::Create(rh->GetNumber());
+	return MakeScriptToken(rh->GetNumber());
 }
 
 ScriptToken* Eval_Assign_Array(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	g_ArrayMap.AddReference(&lh->GetVar()->data, rh->GetArray(), context->script->GetModIndex());
-	return ScriptToken::CreateArray(lh->GetVar()->data);
+	return MakeScriptTokenArray(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_Assign_Elem_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -400,7 +400,7 @@ ScriptToken* Eval_Assign_Elem_Number(OperatorType op, ScriptToken* lh, ScriptTok
 		context->Error("Eval_Assign_Elem_Number : Invalid Array Access - The array %u was not initialized", id);
 		return nullptr;
 	}
-	if (array->SetElementNumber(key, rh->GetNumber())) return ScriptToken::Create(rh->GetNumber());
+	if (array->SetElementNumber(key, rh->GetNumber())) return MakeScriptToken(rh->GetNumber());
 	context->Error("Element with key not found or wrong type");
 	return nullptr;
 }
@@ -418,7 +418,7 @@ ScriptToken* Eval_Assign_Elem_String(OperatorType op, ScriptToken* lh, ScriptTok
 		context->Error("Eval_Assign_Elem_String: Invalid Array Access - The array %u was not initialized", id);
 		return nullptr;
 	}
-	if (array->SetElementString(key, rh->GetString())) return ScriptToken::Create(rh->GetString());
+	if (array->SetElementString(key, rh->GetString())) return MakeScriptToken(rh->GetString());
 	context->Error("Element with key not found or wrong type");
 	return nullptr;
 }
@@ -436,7 +436,7 @@ ScriptToken* Eval_Assign_Elem_Form(OperatorType op, ScriptToken* lh, ScriptToken
 		context->Error("Eval_Assign_Elem_Form: Invalid Array Access - The array %u was not initialized", id);
 		return nullptr;
 	}
-	if (array->SetElementFormID(key, rh->GetFormID())) return ScriptToken::CreateForm(rh->GetFormID());
+	if (array->SetElementFormID(key, rh->GetFormID())) return MakeScriptTokenForm(rh->GetFormID());
 	context->Error("Element with key not found or wrong type");
 	return nullptr;
 }
@@ -446,7 +446,7 @@ ScriptToken* Eval_Assign_Elem_Array(OperatorType op, ScriptToken* lh, ScriptToke
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
 	ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
@@ -456,87 +456,87 @@ ScriptToken* Eval_Assign_Elem_Array(OperatorType op, ScriptToken* lh, ScriptToke
 	}
 
 	if (array->SetElementArray(key, rh->GetArray()))	{
-		return ScriptToken::CreateArray(rh->GetArray());
+		return MakeScriptTokenArray(rh->GetArray());
 	}
 
 	context->Error("Element with key not found or wrong type");
-	return NULL;
+	return nullptr;
 }
 
 ScriptToken* Eval_PlusEquals_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetVar()->data += rh->GetNumber();
-	return ScriptToken::Create(lh->GetVar()->data);
+	return MakeScriptToken(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_MinusEquals_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetVar()->data -= rh->GetNumber();
-	return ScriptToken::Create(lh->GetVar()->data);
+	return MakeScriptToken(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_TimesEquals(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetVar()->data *= rh->GetNumber();
-	return ScriptToken::Create(lh->GetVar()->data);
+	return MakeScriptToken(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_DividedEquals(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	double rhNum = rh->GetNumber();
+	const double rhNum = rh->GetNumber();
 	if (rhNum == 0.0)
 	{
 		context->Error("Division by zero");
-		return NULL;
+		return nullptr;
 	}
 	lh->GetVar()->data /= rhNum;
-	return ScriptToken::Create(lh->GetVar()->data);
+	return MakeScriptToken(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_ExponentEquals(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	double rhNum = rh->GetNumber();
-	double lhNum = lh->GetVar()->data;
+	const double rhNum = rh->GetNumber();
+	const double lhNum = lh->GetVar()->data;
 	lh->GetVar()->data = pow(lhNum,rhNum);
-	return ScriptToken::Create(lh->GetVar()->data);
+	return MakeScriptToken(lh->GetVar()->data);
 }
 
 ScriptToken* Eval_PlusEquals_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetGlobal()->data += rh->GetNumber();
-	return ScriptToken::Create(lh->GetGlobal()->data);
+	return MakeScriptToken(lh->GetGlobal()->data);
 }
 
 ScriptToken* Eval_MinusEquals_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetGlobal()->data -= rh->GetNumber();
-	return ScriptToken::Create(lh->GetGlobal()->data);
+	return MakeScriptToken(lh->GetGlobal()->data);
 }
 
 ScriptToken* Eval_TimesEquals_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	lh->GetGlobal()->data *= rh->GetNumber();
-	return ScriptToken::Create(lh->GetGlobal()->data);
+	return MakeScriptToken(lh->GetGlobal()->data);
 }
 
 ScriptToken* Eval_DividedEquals_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	double num = rh->GetNumber();
+	const double num = rh->GetNumber();
 	if (num == 0.0)
 	{
 		context->Error("Division by zero.");
-		return NULL;
+		return nullptr;
 	}
 
 	lh->GetGlobal()->data /= num;
-	return ScriptToken::Create(lh->GetGlobal()->data);
+	return MakeScriptToken(lh->GetGlobal()->data);
 }
 
 ScriptToken* Eval_ExponentEquals_Global(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	double lhNum = lh->GetGlobal()->data;
+	const double lhNum = lh->GetGlobal()->data;
 	lh->GetGlobal()->data = pow(lhNum,rh->GetNumber());
-	return ScriptToken::Create(lh->GetGlobal()->data);
+	return MakeScriptToken(lh->GetGlobal()->data);
 }
 
 ScriptToken* Eval_PlusEquals_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -551,7 +551,7 @@ ScriptToken* Eval_PlusEquals_String(OperatorType op, ScriptToken* lh, ScriptToke
 	}
 
 	strVar->Set((strVar->String() + rh->GetString()).c_str());
-	return ScriptToken::Create(strVar->String());
+	return MakeScriptToken(strVar->String());
 }
 
 ScriptToken* Eval_TimesEquals_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -575,7 +575,7 @@ ScriptToken* Eval_TimesEquals_String(OperatorType op, ScriptToken* lh, ScriptTok
 	}
 
 	strVar->Set(result.c_str());
-	return ScriptToken::Create(strVar->GetCString());
+	return MakeScriptToken(strVar->GetCString());
 }
 
 ScriptToken* Eval_Multiply_String_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -591,7 +591,7 @@ ScriptToken* Eval_Multiply_String_Number(OperatorType op, ScriptToken* lh, Scrip
 			result += str;
 	}
 
-	return ScriptToken::Create(result.c_str());
+	return MakeScriptToken(result.c_str());
 }
 
 ScriptToken* Eval_PlusEquals_Elem_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -599,9 +599,9 @@ ScriptToken* Eval_PlusEquals_Elem_Number(OperatorType op, ScriptToken* lh, Scrip
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	ArrayID id = lh->GetOwningArrayID();
+	const ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
 	if (!array) {
 		context->Error("Eval_PlusEquals_Elem_Number: Invalid Array Access - The array %u was not initialized", id);
@@ -611,10 +611,10 @@ ScriptToken* Eval_PlusEquals_Elem_Number(OperatorType op, ScriptToken* lh, Scrip
 	double elemVal;
 	if (!key || !array->GetElementNumber(key, &elemVal)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
 
-	return array->SetElementNumber(key, elemVal + rh->GetNumber()) ? ScriptToken::Create(elemVal + rh->GetNumber()) : NULL;
+	return array->SetElementNumber(key, elemVal + rh->GetNumber()) ? MakeScriptToken(elemVal + rh->GetNumber()) : nullptr;
 }
 
 ScriptToken* Eval_MinusEquals_Elem_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -633,9 +633,9 @@ ScriptToken* Eval_MinusEquals_Elem_Number(OperatorType op, ScriptToken* lh, Scri
 	double elemVal;
 	if (!key || !array->GetElementNumber(key, &elemVal)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	return array->SetElementNumber(key, elemVal - rh->GetNumber()) ? ScriptToken::Create(elemVal - rh->GetNumber()) : NULL;
+	return array->SetElementNumber(key, elemVal - rh->GetNumber()) ? MakeScriptToken(elemVal - rh->GetNumber()) : nullptr;
 }
 
 ScriptToken* Eval_TimesEquals_Elem(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -643,9 +643,9 @@ ScriptToken* Eval_TimesEquals_Elem(OperatorType op, ScriptToken* lh, ScriptToken
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	ArrayID id = lh->GetOwningArrayID();
+	const ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
 	if (!array) {
 		context->Error("Eval_TimesEquals_Elem: Invalid Array Access - The array %u was not initialized",id );
@@ -654,10 +654,10 @@ ScriptToken* Eval_TimesEquals_Elem(OperatorType op, ScriptToken* lh, ScriptToken
 	double elemVal;
 	if (!array->GetElementNumber(key, &elemVal)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	double result = elemVal * rh->GetNumber();
-	return array->SetElementNumber(key, result) ? ScriptToken::Create(result) : NULL;
+	const double result = elemVal * rh->GetNumber();
+	return array->SetElementNumber(key, result) ? MakeScriptToken(result) : nullptr;
 }
 
 ScriptToken* Eval_DividedEquals_Elem(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -665,9 +665,9 @@ ScriptToken* Eval_DividedEquals_Elem(OperatorType op, ScriptToken* lh, ScriptTok
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	ArrayID id = lh->GetOwningArrayID();
+	const ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
 	if (!array) {
 		context->Error("Eval_DividedEquals_Elem : Invalid Array Access - The array %u was not initialized", id);
@@ -676,17 +676,17 @@ ScriptToken* Eval_DividedEquals_Elem(OperatorType op, ScriptToken* lh, ScriptTok
 	double elemVal;
 	if (!key || !array->GetElementNumber(key, &elemVal)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
 	double result = rh->GetNumber();
 	if (result == 0.0)
 	{
 		context->Error("Division by zero");
-		return NULL;
+		return nullptr;
 	}
 
 	result = elemVal / rh->GetNumber();
-	return array->SetElementNumber(key, result) ? ScriptToken::Create(result) : NULL;
+	return array->SetElementNumber(key, result) ? MakeScriptToken(result) : nullptr;
 }
 
 ScriptToken* Eval_ExponentEquals_Elem(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -694,9 +694,9 @@ ScriptToken* Eval_ExponentEquals_Elem(OperatorType op, ScriptToken* lh, ScriptTo
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	ArrayID id = lh->GetOwningArrayID();
+	const ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
 	if (!array) {
 		context->Error("Eval_ExponentEquals_Elem: Invalid Array Access - The array %u was not initialized", id);
@@ -705,10 +705,10 @@ ScriptToken* Eval_ExponentEquals_Elem(OperatorType op, ScriptToken* lh, ScriptTo
 	double elemVal;
 	if (!array->GetElementNumber(key, &elemVal)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
-	double result = pow(elemVal,rh->GetNumber());
-	return array->SetElementNumber(key, result) ? ScriptToken::Create(result) : NULL;
+	const double result = pow(elemVal,rh->GetNumber());
+	return array->SetElementNumber(key, result) ? MakeScriptToken(result) : nullptr;
 }
 
 ScriptToken* Eval_PlusEquals_Elem_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -717,7 +717,7 @@ ScriptToken* Eval_PlusEquals_Elem_String(OperatorType op, ScriptToken* lh, Scrip
 	const ArrayKey* key = lh->GetArrayKey();
 	if (!key) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
 	ArrayID id = lh->GetOwningArrayID();
 	ArrayVar* array = g_ArrayMap.Get(id);
@@ -727,20 +727,20 @@ ScriptToken* Eval_PlusEquals_Elem_String(OperatorType op, ScriptToken* lh, Scrip
 	}
 	if (!array->GetElementString(key, elemStr)) {
 		context->Error("Array Element is invalid");
-		return NULL;
+		return nullptr;
 	}
 	elemStr += rh->GetString();
-	return array->SetElementString(key, elemStr.c_str()) ? ScriptToken::Create(elemStr) : NULL;
+	return array->SetElementString(key, elemStr.c_str()) ? MakeScriptToken(elemStr) : nullptr;
 }
 
 ScriptToken* Eval_Negation(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(lh->GetNumber() * -1);
+	return MakeScriptToken(lh->GetNumber() * -1);
 }
 
 ScriptToken* Eval_LogicalNot(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(lh->GetBool() ? false : true);
+	return MakeScriptToken(lh->GetBool() ? false : true);
 }
 
 ScriptToken* Eval_Subscript_Array_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -762,7 +762,7 @@ ScriptToken* Eval_Subscript_Array_Number(OperatorType op, ScriptToken* lh, Scrip
 
 ScriptToken* Eval_Subscript_Elem_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	UInt32 idx = rh->GetNumber();
+	const UInt32 idx = rh->GetNumber();
 	ArrayElementToken* element = dynamic_cast<ArrayElementToken*>(lh);
 
 	if (!element->CanConvertTo(kTokenType_String)) {
@@ -801,14 +801,14 @@ ScriptToken* Eval_Subscript_Array_String(OperatorType op, ScriptToken* lh, Scrip
 
 ScriptToken* Eval_Subscript_Array_Slice(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	UInt32 slicedID = g_ArrayMap.MakeSlice(lh->GetArray(), rh->GetSlice(), context->script->GetModIndex());
+	const UInt32 slicedID = g_ArrayMap.MakeSlice(lh->GetArray(), rh->GetSlice(), context->script->GetModIndex());
 	if (!slicedID)
 	{
 		context->Error("Invalid array slice operation - array is uninitialized or supplied index does not match key type");
-		return NULL;
+		return nullptr;
 	}
 
-	return ScriptToken::CreateArray(slicedID);
+	return MakeScriptTokenArray(slicedID);
 }
 
 ScriptToken* Eval_Subscript_StringVar_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -864,17 +864,17 @@ ScriptToken* Eval_Subscript_StringVar_Slice(OperatorType op, ScriptToken* lh, Sc
 
 ScriptToken* Eval_Subscript_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	UInt32 idx = (rh->GetNumber() < 0) ? strlen(lh->GetString()) + rh->GetNumber() : rh->GetNumber();
+	const UInt32 idx = (rh->GetNumber() < 0) ? strlen(lh->GetString()) + rh->GetNumber() : rh->GetNumber();
 	if (idx < strlen(lh->GetString()))
-		return ScriptToken::Create(std::string(lh->GetString()).substr(idx, 1));
+		return MakeScriptToken(std::string(lh->GetString()).substr(idx, 1));
 	else
-		return ScriptToken::Create("");
+		return MakeScriptToken("");
 }
 
 ScriptToken* Eval_Subscript_String_Slice(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	const Slice* srcSlice = rh->GetSlice();
-	std::string str = lh->GetString();
+	const std::string str = lh->GetString();
 
 	if (!srcSlice || srcSlice->bIsString)
 	{
@@ -889,9 +889,9 @@ ScriptToken* Eval_Subscript_String_Slice(OperatorType op, ScriptToken* lh, Scrip
 		slice.m_upper += str.length();
 
 	if (slice.m_lower >= 0 && slice.m_upper < str.length() && slice.m_lower <= slice.m_upper)	// <=, not <, to support single-character slice
-		return ScriptToken::Create(str.substr(slice.m_lower, slice.m_upper - slice.m_lower + 1));
+		return MakeScriptToken(str.substr(slice.m_lower, slice.m_upper - slice.m_lower + 1));
 	else
-		return ScriptToken::Create("");
+		return MakeScriptToken("");
 }
 
 ScriptToken* Eval_MemberAccess(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -924,37 +924,37 @@ ScriptToken* Eval_Slice_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh
 
 ScriptToken* Eval_ToString_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(lh->GetString());
+	return MakeScriptToken(lh->GetString());
 }
 
 ScriptToken* Eval_ToString_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	char buf[0x20];
+	char buf[0x20]{};
 	sprintf_s(buf, sizeof(buf), "%g", lh->GetNumber());
-	return ScriptToken::Create(std::string(buf));
+	return MakeScriptToken(std::string(buf));
 }
 
 ScriptToken* Eval_ToString_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(std::string(GetFullName(lh->GetTESForm())));
+	return MakeScriptToken(std::string(GetFullName(lh->GetTESForm())));
 }
 
 ScriptToken* Eval_ToString_Array(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	char buf[0x20];
-	ArrayID id = lh->GetArray();
-	ArrayVar* arr = g_ArrayMap.Get(id);
+	char buf[0x20]{};
+	const ArrayID id = lh->GetArray();
+	const ArrayVar* arr = g_ArrayMap.Get(id);
 	if (arr) {
 		//TODO ArrayVar::GetStringRepresentation
 		sprintf_s(buf, sizeof(buf), "Array ID %d", id);
-		return ScriptToken::Create(buf);
+		return MakeScriptToken(buf);
 	}
-	return ScriptToken::Create("Array Id " + std::to_string(id) + " (Invalid)");
+	return MakeScriptToken("Array Id " + std::to_string(id) + " (Invalid)");
 }
 
 ScriptToken* Eval_ToNumber(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	return ScriptToken::Create(lh->GetNumericRepresentation(false));
+	return MakeScriptToken(lh->GetNumericRepresentation(false));
 }
 
 ScriptToken* Eval_In(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -1046,16 +1046,16 @@ ScriptToken* Eval_Box_Number(OperatorType op, ScriptToken* lh, ScriptToken* rh, 
 {
 	// the inverse operation of dereference: given a value of any type, wraps it in a single-element array
 	// again, a convenience request
-	ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
+	const ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
 	g_ArrayMap.SetElementNumber(arr, ArrayKey(0.0), lh->GetNumber());
-	return ScriptToken::CreateArray(arr);
+	return MakeScriptTokenArray(arr);
 }
 
 ScriptToken* Eval_Box_String(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
-	ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
+	const ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
 	g_ArrayMap.SetElementString(arr, ArrayKey(0.0), lh->GetString());
-	return ScriptToken::CreateArray(arr);
+	return MakeScriptTokenArray(arr);
 }
 
 ScriptToken* Eval_Box_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -1063,14 +1063,14 @@ ScriptToken* Eval_Box_Form(OperatorType op, ScriptToken* lh, ScriptToken* rh, Ex
 	ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
 	TESForm* form = lh->GetTESForm();
 	g_ArrayMap.SetElementFormID(arr, ArrayKey(0.0), form ? form->refID : 0);
-	return ScriptToken::CreateArray(arr);
+	return MakeScriptTokenArray(arr);
 }
 
 ScriptToken* Eval_Box_Array(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
 {
 	ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, context->script->GetModIndex());
 	g_ArrayMap.SetElementArray(arr, ArrayKey(0.0), lh->GetArray());
-	return ScriptToken::CreateArray(arr);
+	return MakeScriptTokenArray(arr);
 }
 
 ScriptToken* Eval_Pair(OperatorType op, ScriptToken* lh, ScriptToken* rh, ExpressionEvaluator* context)
@@ -2456,7 +2456,7 @@ Token_Type ExpressionParser::PopOperator(std::stack<Operator*> & ops, std::stack
 	operands.push(result);
 
 	// write operator to postfix expression
-	ScriptToken* opToken = ScriptToken::Create(topOp);
+	ScriptToken* opToken = MakeScriptToken(topOp);
 	opToken->Write(m_lineBuf);
 	delete opToken;
 
@@ -2607,7 +2607,7 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	if (!firstChar)
 	{
 		CompilerMessages::Show(CompilerMessages::kError_CantParse, m_scriptBuf);
-		return NULL;
+		return nullptr;
 	}
 	else if (firstChar == '"')			// string literal
 	{
@@ -2616,14 +2616,14 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 		if (!endQuotePtr)
 		{
 			CompilerMessages::Show(CompilerMessages::kError_MismatchedQuotes, m_scriptBuf);
-			return NULL;
+			return nullptr;
 		}
 		else
 		{
 			std::string strLit(CurText(), endQuotePtr - CurText());
 			Offset() = endQuotePtr - Text() + 1;
 			FormatString(strLit);
-			return ScriptToken::Create(strLit);
+			return MakeScriptToken(strLit);
 		}
 	}
 	else if (firstChar == '$')	// string vars passed to vanilla cmds as '$var'; not necessary here but allowed for consistency
@@ -2639,21 +2639,21 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	if (curOp && curOp->ExpectsStringLiteral()) {
 		if (!token.length() || bExpectStringVar) {
 			CompilerMessages::Show(CompilerMessages::kError_ExpectedStringLiteral, m_scriptBuf);
-			return NULL;
+			return nullptr;
 		}
 		else {
-			return ScriptToken::Create(token);
+			return MakeScriptToken(token);
 		}
 	}
 
 	// try to convert to a number
-	char* leftOvers = NULL;
-	double dVal = strtod(token.c_str(), &leftOvers);
+	char* leftOvers = nullptr;
+	const double dVal = strtod(token.c_str(), &leftOvers);
 	if (*leftOvers == 0)	// entire string parsed as a double
-		return ScriptToken::Create(dVal);
+		return MakeScriptToken(dVal);
 
 	// check for a calling object
-	Script::RefVariable* callingObj = NULL;
+	Script::RefVariable* callingObj = nullptr;
 	UInt16 refIdx = 0;
 	UInt32 dotPos = token.find('.');
 	if (dotPos != -1)
@@ -2665,9 +2665,9 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	// before we go any further, check for local variable in case of name collisions between vars and other objects
 	if (dotPos == -1)
 	{
-		Script::VariableInfo* varInfo = LookupVariable(token.c_str(), NULL);
+		Script::VariableInfo* varInfo = LookupVariable(token.c_str(), nullptr);
 		if (varInfo)
-			return ScriptToken::Create(varInfo, 0, m_scriptBuf->GetVariableType(varInfo, NULL));
+			return MakeScriptToken(varInfo, 0, m_scriptBuf->GetVariableType(varInfo, nullptr));
 	}
 
 	// "player" can be base object or ref. Assume base object unless called with dot syntax
@@ -2678,7 +2678,7 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	if (dotPos != -1 && !refVar)
 	{
 		CompilerMessages::Show(CompilerMessages::kError_InvalidDotSyntax, m_scriptBuf);
-		return NULL;
+		return nullptr;
 	}
 	else if (refVar)
 		refIdx = m_scriptBuf->GetRefIdx(refVar);
@@ -2688,16 +2688,16 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 		if (dotPos == -1)
 		{
 			if (refVar->varIdx)			// it's a variable
-				return ScriptToken::Create(m_scriptBuf->vars.GetVariableByName(refVar->name.m_data), 0, Script::eVarType_Ref);
+				return MakeScriptToken(m_scriptBuf->vars.GetVariableByName(refVar->name.m_data), 0, Script::eVarType_Ref);
 			else if (refVar->form && refVar->form->typeID == kFormType_Global)
-				return ScriptToken::Create((TESGlobal*)refVar->form, refIdx);
+				return MakeScriptToken((TESGlobal*)refVar->form, refIdx);
 			else						// literal reference to a form
-				return ScriptToken::Create(refVar, refIdx);
+				return MakeScriptToken(refVar, refIdx);
 		}
 		else if (refVar->form && refVar->form->typeID != kFormType_REFR && refVar->form->typeID != kFormType_Quest)
 		{
 			CompilerMessages::Show(CompilerMessages::kError_InvalidDotSyntax, m_scriptBuf);
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -2711,12 +2711,12 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 			if (m_scriptBuf->scriptType == Script::eType_Quest && cmdInfo->needsParent && !refVar)
 			{
 				CompilerMessages::Show(CompilerMessages::kError_RefRequired, m_scriptBuf, cmdInfo->longName);
-				return NULL;
+				return nullptr;
 			}
 			if (refVar && refVar->form && refVar->form->typeID != kFormType_REFR)	// make sure we're calling it on a reference
-				return NULL;
+				return nullptr;
 
-			return ScriptToken::Create(cmdInfo, refIdx);
+			return MakeScriptToken(cmdInfo, refIdx);
 		}
 	}
 
@@ -2725,7 +2725,7 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	if (!varInfo && dotPos != -1)
 	{
 		CompilerMessages::Show(CompilerMessages::kError_CantFindVariable, m_scriptBuf, token.c_str());
-		return NULL;
+		return nullptr;
 	}
 	else if (varInfo)
 	{
@@ -2733,21 +2733,21 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 		if (bExpectStringVar && theVarType != Script::eVarType_String)
 		{
 			CompilerMessages::Show(CompilerMessages::kError_ExpectedStringVariable, m_scriptBuf);
-			return NULL;
+			return nullptr;
 		}
 		else
-			return ScriptToken::Create(varInfo, refIdx, theVarType);
+			return MakeScriptToken(varInfo, refIdx, theVarType);
 	}
 	else if (bExpectStringVar)
 	{
 		CompilerMessages::Show(CompilerMessages::kError_ExpectedStringVariable, m_scriptBuf);
-		return NULL;
+		return nullptr;
 	}
 
-	if (refVar != NULL)
+	if (refVar != nullptr)
 	{
 		CompilerMessages::Show(CompilerMessages::kError_InvalidDotSyntax, m_scriptBuf);
-		return NULL;
+		return nullptr;
 	}
 
 	// anything else that makes it this far is treated as string
@@ -2756,7 +2756,7 @@ ScriptToken* ExpressionParser::ParseOperand(Operator* curOp)
 	}
 
 	FormatString(token);
-	return ScriptToken::Create(token);
+	return MakeScriptToken(token);
 }
 
 bool ExpressionParser::ParseFunctionCall(CommandInfo* cmdInfo)

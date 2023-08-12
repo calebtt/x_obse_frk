@@ -69,6 +69,8 @@
 #include <functional>
 #include <limits>
 
+#include <ranges>
+
 // RPC
 #include <Rpc.h>
 
