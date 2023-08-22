@@ -106,43 +106,52 @@ bool Cmd_GetOBSERevision_Execute(COMMAND_ARGS)
 	return true;
 }
 
-static bool Cmd_DumpExtraData_Execute(COMMAND_ARGS)
+namespace
 {
-	if (thisObj)
+	bool Cmd_DumpExtraData_Execute(COMMAND_ARGS)
 	{
-		_MESSAGE("Dumping extra data for ref %08x", thisObj);
-		for (BSExtraData* xData = thisObj->baseExtraList.m_data; xData; xData = xData->next)
+		if (thisObj)
 		{
-			_MESSAGE("ExtraData Type: %02x", xData->type);
-			DumpClass(xData, 8);
+			_MESSAGE("Dumping extra data for ref %08x", thisObj);
+			for (BSExtraData* xData = thisObj->baseExtraList.m_data; xData; xData = xData->next)
+			{
+				_MESSAGE("ExtraData Type: %02x", xData->type);
+				DumpClass(xData, 8);
+			}
+			_MESSAGE(" ");
 		}
-		_MESSAGE(" ");
+
+		return true;
 	}
-
-	return true;
 }
-
 DEFINE_COMMAND(DumpExtraData,
 			   testing,
 			   1,
 			   0,
 			   NULL);
 
-static void DumpExtraDataList(ExtraDataList * list)
+namespace
 {
-	for(BSExtraData * traverse = list->m_data; traverse; traverse = traverse->next)
+	void DumpExtraDataList(ExtraDataList* list)
 	{
-		Console_Print("%s", GetObjectClassName(traverse));
-
-		if(traverse->type == kExtraData_Worn)
+		for (BSExtraData* traverse = list->m_data; traverse; traverse = traverse->next)
 		{
-			Console_Print("worn = %02X %02X %02X", traverse->pad[0], traverse->pad[1], traverse->pad[2]);
+			Console_Print("%s", GetObjectClassName(traverse));
+
+			if (traverse->type == kExtraData_Worn)
+			{
+				Console_Print("worn = %02X %02X %02X", traverse->pad[0], traverse->pad[1], traverse->pad[2]);
+			}
 		}
 	}
 }
 
-static const UInt32 kMaxSavedIPs = 0x100;
-static SavedIPInfo s_savedIPTable[kMaxSavedIPs] = { { 0 } };
+static constexpr UInt32 kMaxSavedIPs = 0x100;
+
+namespace
+{
+	SavedIPInfo s_savedIPTable[kMaxSavedIPs]{};
+}
 
 bool Cmd_SaveIP_Execute(COMMAND_ARGS)
 {
@@ -178,7 +187,7 @@ bool Cmd_SaveIP_Execute(COMMAND_ARGS)
 bool Cmd_RestoreIP_Execute(COMMAND_ARGS)
 {
 
-	static const UInt32 kDataDeltaStackOffset = 482;
+	static constexpr UInt32 kDataDeltaStackOffset{ 482 };
 
 	UInt32	_esi;
 
@@ -188,7 +197,7 @@ bool Cmd_RestoreIP_Execute(COMMAND_ARGS)
 	// make sure this is only called from the main execution loop
 	ASSERT_STR(arg1 == scriptObj->data, "RestoreIP may not be called inside a set or if statement");
 
-	UInt32	idx = 0;
+	UInt32	idx{};
 
 	if(!ExtractArgs(PASS_EXTRACT_ARGS, &idx)) return true;
 
@@ -431,152 +440,108 @@ bool Cmd_Default_Parse(UInt32 numParams, ParamInfo* paramInfo, ScriptLineBuffer*
 	return g_defaultParseCommand(numParams, paramInfo, lineBuf, scriptBuf);
 }
 
-CommandTable::CommandTable()
+namespace // anonymous
 {
-	//
+	ParamInfo kTestExtractArgs_Params[]
+	{
+		{
+			.typeStr = "TESForm",
+			.typeID = kParamType_InventoryObject,
+			.isOptional = 0
+		},
+	};
+
+	ParamInfo kTestArgCommand_Params[]
+	{
+		{
+			.typeStr = "int",
+			.typeID = kParamType_Integer,
+			.isOptional = 0
+		}
+	};
+
+	CommandInfo kCommandInfo_DumpVarInfo
+	{
+		.longName = "DumpVarInfo",
+		.execute = HANDLER(Cmd_DumpVarInfo_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
+	CommandInfo kCommandInfo_TestExtractArgs
+	{
+		.longName = "TestExtractArgs",
+		.numParams = 1,
+		.params = kTestExtractArgs_Params,
+		.execute = HANDLER(Cmd_TestExtractArgs_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
+	CommandInfo kCommandInfo_GetOBSEVersion
+	{
+		.longName = "GetOBSEVersion",
+		.helpText = "returns the installed version of OBSE",
+		.execute = HANDLER(Cmd_GetOBSEVersion_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
+	CommandInfo kCommandInfo_GetOBSERevision
+	{
+		.longName = "GetOBSERevision",
+		.helpText = "returns the numbered revision of the installed version of OBSE",
+		.execute = HANDLER(Cmd_GetOBSERevision_Execute),
+		.parse = Cmd_Default_Parse,
+	};
+
+	CommandInfo kTestCommand
+	{
+		.longName = "testcommand",
+		.shortName = "tcmd",
+		.opcode = 0,
+		.helpText = "test command for obse",
+		.needsParent = 0,
+		.numParams = 0,
+		.params = nullptr,
+		.execute = HANDLER(Cmd_Test_Execute),
+		.parse = Cmd_Default_Parse,
+		.eval = nullptr,
+		.flags = 0
+	};
+
+	CommandInfo kTestArgCommand
+	{
+		.longName = "testargcommand",
+		.shortName = "tacmd",
+		.helpText = "test argument command for obse",
+		.numParams = 1,
+		.params = kTestArgCommand_Params,
+		.execute = HANDLER(Cmd_TestArgs_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
+	CommandInfo kCommandInfo_SaveIP
+	{
+		.longName = "SaveIP",
+		.shortName = "Label",
+		.numParams = 1,
+		.params = kParams_OneOptionalInt,
+		.execute = HANDLER(Cmd_SaveIP_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
+	CommandInfo kCommandInfo_RestoreIP
+	{
+		.longName = "RestoreIP",
+		.shortName = "Goto",
+		.numParams = 1,
+		.params = kParams_OneOptionalInt,
+		.execute = HANDLER(Cmd_RestoreIP_Execute),
+		.parse = Cmd_Default_Parse
+	};
+
 }
 
-CommandTable::~CommandTable()
-{
-	//
-}
+// TODO finish off the rest of these
 
-static CommandInfo kCommandInfo_DumpVarInfo =
-{
-	"DumpVarInfo",
-	"",
-	0,
-	"",
-	0,
-	0,
-	NULL,
-
-	HANDLER(Cmd_DumpVarInfo_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static ParamInfo kTestExtractArgs_Params[] =
-{
-	{	"TESForm",	kParamType_InventoryObject,	0 },
-};
-
-static CommandInfo kCommandInfo_TestExtractArgs =
-{
-	"TestExtractArgs",
-	"",
-	0,
-	"",
-	0,
-	1,
-	kTestExtractArgs_Params,
-
-	HANDLER(Cmd_TestExtractArgs_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static CommandInfo kCommandInfo_GetOBSEVersion =
-{
-	"GetOBSEVersion",
-	"",
-	0,
-	"returns the installed version of OBSE",
-	0,
-	0,
-	NULL,
-
-	HANDLER(Cmd_GetOBSEVersion_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static CommandInfo kCommandInfo_GetOBSERevision =
-{
-	"GetOBSERevision",
-	"",
-	0,
-	"returns the numbered revision of the installed version of OBSE",
-	0,
-	0,
-	NULL,
-
-	HANDLER(Cmd_GetOBSERevision_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-static CommandInfo kTestCommand =
-{
-	"testcommand",
-	"tcmd",
-	0,
-	"test command for obse",
-	0,		// doesn't require parent obj
-	0,		// doesn't have params
-	NULL,	// no param table
-
-	HANDLER(Cmd_Test_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static ParamInfo kTestArgCommand_Params[] =
-{
-	{	"int", kParamType_Integer, 0 }
-};
-
-static CommandInfo kTestArgCommand =
-{
-	"testargcommand",
-	"tacmd",
-	0,
-	"test argument command for obse",
-	0,
-	1,
-	kTestArgCommand_Params,
-
-	HANDLER(Cmd_TestArgs_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static CommandInfo kCommandInfo_SaveIP =
-{
-	"SaveIP",
-	"Label",
-	0,
-	"",
-	0,
-	1,
-	kParams_OneOptionalInt,
-
-	HANDLER(Cmd_SaveIP_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
-
-static CommandInfo kCommandInfo_RestoreIP =
-{
-	"RestoreIP",
-	"Goto",
-	0,
-	"",
-	0,
-	1,
-	kParams_OneOptionalInt,
-
-	HANDLER(Cmd_RestoreIP_Execute),
-	Cmd_Default_Parse,
-	NULL,
-	NULL
-};
 
 static CommandInfo kCommandInfo_DumpDocs =
 {

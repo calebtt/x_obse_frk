@@ -257,20 +257,20 @@ bool Cmd_Default_Eval(COMMAND_ARGS_EVAL);
 
 struct CommandInfo
 {
-	const char	* longName;		//  0
-	const char	* shortName;	//  4
-	UInt32		opcode;			//  8
-	const char	* helpText;		//  C
-	UInt16		needsParent;	// 10   //Reference thisObj required
-	UInt16		numParams;		// 12
-	ParamInfo	* params;		// 14
+	const char	* longName{""};		//  0
+	const char	* shortName{""};	//  4
+	UInt32		opcode{};			//  8
+	const char	* helpText{""};		//  C
+	UInt16		needsParent{};	// 10   //Reference thisObj required
+	UInt16		numParams{};		// 12
+	ParamInfo	* params{};		// 14
 
 	// handlers
-	Cmd_Execute	execute;		// 18
-	Cmd_Parse	parse;			// 1C
-	Cmd_Eval	eval;			// 20 - smaller version of Cmd_Execute with arg extracted already, used for dialog condition evaluation
+	Cmd_Execute	execute{};		// 18
+	Cmd_Parse	parse{};			// 1C
+	Cmd_Eval	eval{};			// 20 - smaller version of Cmd_Execute with arg extracted already, used for dialog condition evaluation
 
-	UInt32	flags;				// 24
+	UInt32	flags{};				// 24
 
 	void	DumpFunctionDef() const;
 	void	DumpDocs() const;
@@ -297,8 +297,8 @@ struct PluginInfo;
 class CommandTable
 {
 public:
-	CommandTable();
-	~CommandTable();
+	CommandTable() = default;
+	~CommandTable() = default;
 
 	static void	Init(void);
 
