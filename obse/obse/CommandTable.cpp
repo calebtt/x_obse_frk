@@ -89,62 +89,6 @@ bool Cmd_TestExtractArgs_Execute(COMMAND_ARGS)
 	_MESSAGE("TestExtractArgs command executing, script %08x", scriptObj->refID);
 	if (thisObj)
 		_MESSAGE("thisObj %08x", thisObj->refID);
-	return true;
-
-	UInt8	* scriptData = (UInt8 *)arg1;
-	UInt8	* scriptDataBase = scriptData;
-
-	scriptData += *opcodeOffsetPtr;
-
-	scriptData -= 2;
-
-	UInt32	opcodeDataLen = *((UInt16 *)scriptData);
-	scriptData += 2;
-
-	UInt32	numArgs = *((UInt16 *)scriptData);
-	scriptData += 2;
-
-	_MESSAGE("len = %04X numArgs = %04X", opcodeDataLen, numArgs);
-
-	{
-		static int	exportID = 0;
-		char		name[64];
-
-		sprintf_s(name, sizeof(name), "arg_%d", exportID);
-		exportID++;
-
-		IFileStream	out;
-		if(out.Create(name))
-			out.WriteBuf(scriptData - 2, opcodeDataLen);
-	}
-
-	for(UInt32 i = 0; i < numArgs; i++)
-	{
-		ParamInfo	* info = &paramInfo[i];
-
-		switch(info->typeID)
-		{
-			case kParamType_InventoryObject:
-			{
-				UInt8	unk0 = *scriptData++;
-				UInt16	varIdx = *((UInt16 *)scriptData);
-				Script::RefVariable	* var = scriptObj->GetVariable(varIdx);
-				ASSERT(var);
-
-				var->Resolve(eventList);
-
-				_MESSAGE("inventory object %02X %04X %08X (%08X)", unk0, varIdx, var->form,
-					var->form ? var->form->refID : 0);
-			}
-			break;
-
-			default:
-				_MESSAGE("unknown type %02X", info->typeID);
-				break;
-		}
-	}
-
-	*opcodeOffsetPtr += opcodeDataLen;
 
 	return true;
 }
